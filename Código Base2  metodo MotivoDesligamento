@@ -1,0 +1,38 @@
+
+Função MotivoDesligamentoCodigo(d As String) As String
+ Selecione Case Trim(Range("E2"). Valor) ' Trim tira os espaços
+        Case "TÉRMINO DO CONTRATO"
+            MotivoDesligamentoCodigo = "I3" + d + "N"
+            
+ Processo "RESCISÃO A PEDIDO"
+ MotivoDesligamentoCodigo = "J" + d
+            
+        Case "EXONERAÇÃO POR INICIATIVA DO EXECUTIVO"
+            MotivoDesligamentoCodigo = "I1" + d + "N"
+            
+ Caso Else
+        MotivoDesligamentoCodigo = "Valor invalido"
+ Seleção de fim
+    
+Função Fim
+
+
+
+
+ 'Selecione Case Trim(Range("E2"). Valor) ' Trim tira os espaços
+ « Processo "TÉRMINO DO CONTRATO"
+ 'CodigoDesligamento = "I3" + DataDemissão + "N"
+ « MsgBox CodigoDesligamento
+ « Processo "RESCISÃO A PEDIDO"
+ 'CodigoDesligamento = " J" + DataDemissão
+ « MsgBox CodigoDesligamento
+ « Case "EXONERAÇÃO POR INICIATIVA DO EXECUTIVO"
+ 'CodigoDesligamento = "I1" + DataDemissão + "N"
+ « MsgBox CodigoDesligamento
+ «Caso mais
+      'CodigoDesligamento = "Valor invalido"
+ « MsgBox CodigoDesligamento
+ « Fim Selecione
+
+
+
