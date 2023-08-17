@@ -1,0 +1,114 @@
+Sub LerArquivoTexto()
+    
+
+
+Dim LocaldoArquivo como String
+ Dim NumArquivo como inteiro
+ Dim FileContent como cadeia de caracteres
+    Dim Linha As String
+    
+    LocaldoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
+    NumArquivo = FreeFile
+    
+ Abra LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    
+    FileContent = Input$(LOF(1), #NumArquivo)
+ Fechar #NumArquivo
+    
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+    
+ Dim Codigo como corda
+ Dim Pis como corda
+    Dim Nome As String
+ Dim DataAdimissao como String
+ Dim Codigo20 Como Corda
+ Dim CodigoDesligamento Como Corda
+ Dim BM como corda
+ Dim DataNacimento Como String
+ Dim DataDemissão como cadeia de caracteres
+ Dim NovoConteudo Como Corda
+    Dim linhas() As String
+    
+    
+ Codigo = Médio (Linha, 1, 18)
+    Pis = Mid(Linha, 33, 11) ' Ajuste para 11 caracteres
+    Nome = Mid(Linha, 54, 70) ' Ajuste para 30 caracteres
+    DataAdmissao = Mid(Linha, 44, 8) ' Extrai a DataAdmissao corretamente
+ Codigo20 = Médio (Linha, 48, 2)
+ DataDemissao = Intervalo("D2"). Valor
+ DataDemissao = Substituir(DataDemissão, "/", "")
+    
+    
+    
+ CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissão)
+    BM = Mid(Linha, 124, 11) ' Ajuste para 12 caracteres
+ DataNacimento = Médio (Linha, 155, 8)
+    
+    
+ ' Modificar o segundo caractere do Código
+ Codigo = Esquerda(Codigo, 1) & "2" & Direita(Codigo, Len(Codigo) - 2)
+    
+    ' Exibe as informações extraídas
+    MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & Nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & BM & vbCrLf & "DataNacimento: " & DataNacimento
+    
+    linhas = Split(FileContent, vbCrLf)
+   Dim i As Long
+ Para i = 0 Para UBound(linhas)
+ Se InStr(1, linhas(i), BM, vbTextCompare) > 0 Então
+            MsgBox "Valor encontrado na posição " & i
+            Exit For ' Encerra o loop assim que o valor é encontrado
+ Fim Se
+    
+    
+        
+ Seguinte i
+    
+    
+    
+    
+    
+    
+    
+    
+   
+    
+      ' Crie o novo conteúdo com as informações modificadas
+    NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(Nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 10) & Space(226) & "*"
+ 'Se BM = Médio (Linha, 124, 11) então
+        'NovoConteudo = Linha & vbCrLf & NovoConteudo
+ «Acabar se
+    
+    ' Abre o arquivo em modo de adição (Append) para adicionar o novo conteúdo ao final do arquivo
+ Abra LocaldoArquivo para anexar como #NumArquivo
+ #NumArquivo Impressão, NovoConteúdo
+ Fechar #NumArquivo
+    
+    
+    
+Subfinal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
