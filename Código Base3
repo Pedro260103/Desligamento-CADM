@@ -111,7 +111,40 @@ Dim LocaldoArquivo As String
 End Sub
 
 
+Function MotivoDesligamentoCodigo(d As String, c As LongLong) As String
+    Select Case Trim(Range("E" & c).Value) ' Trim tira os espaços
+        Case "TÉRMINO DO CONTRATO"
+            MotivoDesligamentoCodigo = "I3" + d + "N"
+            
+        Case "RESCISAO A PEDIDO"
+            MotivoDesligamentoCodigo = " J" + d
+            
+        Case "EXONERAÇÃO POR INICIATIVA DO EXECUTIVO"
+            MotivoDesligamentoCodigo = "I1" + d + "N"
+            
+        Case Else
+        MotivoDesligamentoCodigo = "Valor invalido"
+    End Select
+    
+End Function
 
+
+
+
+ 'Select Case Trim(Range("E2").Value) ' Trim tira os espaços
+        'Case "TÉRMINO DO CONTRATO"
+          'CodigoDesligamento = "I3" + DataDemissao + "N"
+         'MsgBox CodigoDesligamento
+        'Case "RESCISAO A PEDIDO"
+          'CodigoDesligamento = " J" + DataDemissao
+         'MsgBox CodigoDesligamento
+        'Case "EXONERAÇÃO POR INICIATIVA DO EXECUTIVO"
+         'CodigoDesligamento = "I1" + DataDemissao + "N"
+        'MsgBox CodigoDesligamento
+       'Case Else
+      'CodigoDesligamento = "Valor invalido"
+     'MsgBox CodigoDesligamento
+    'End Select
 
 
 
