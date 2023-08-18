@@ -194,7 +194,7 @@ Sub grava()
     
     
     
-    For i = 0 To UBound(linhas)
+    For i = 3 To UBound(linhas)
         Nome = Mid(linhas(i), 54, 70)
         BM = Mid(linhas(i), 124, 11)
         eUmBM = Mid(linhas(i), 124, 2)
@@ -208,8 +208,8 @@ Sub grava()
             
         Else
             MsgBox "Achamos o I3N , I1N , J"
-            PrimeiraInfo = Mid(linhas(i), 1, 244)
-            SegundaInfo = Mid(linhas(i), 245, 116)
+            PrimeiraInfo = Mid(linhas(i - 1), 1, 244)
+            SegundaInfo = Mid(linhas(i - 1), 245, 116)
             MsgBox SegundaInfo
             SegundaInfo = Left(SegundaInfo, 1) & "1" & Right(SegundaInfo, Len(SegundaInfo) - 2)
             NovoConteudo = PrimeiraInfo + SegundaInfo
