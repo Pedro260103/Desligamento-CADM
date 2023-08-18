@@ -150,3 +150,70 @@ End Function
 
 
 
+
+
+
+
+
+
+
+'demanda urgente
+
+
+Sub grava()
+    Dim LocalDoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+    LocalDoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
+    NumArquivo = FreeFile
+    
+    Open LocalDoArquivo For Input As #NumArquivo
+
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+    
+    
+    Linha = Trim(FileContent)
+    
+    Dim CodigoFinal As String
+    Dim Nome As String
+    Dim BM As String
+    Dim eUmBM As String
+    Dim NovoConteudo As String
+    Dim linhas() As String
+    Dim MudaPessoa As LongLong
+    MudaPessoa = 0
+    Dim puladas As LongLong
+    puladas = 0
+    linhas = Split(FileContent, vbCrLf)
+    
+    
+    
+    
+    
+    
+    For i = 0 To UBound(linhas)
+        Nome = Mid(linhas(i), 54, 70)
+        BM = Mid(linhas(i), 124, 11)
+        eUmBM = Mid(linhas(i), 124, 2)
+        CodigoFinal = Mid(linhas(i), 245, 114)
+        MsgBox Nome
+        If InStr(1, linhas(i), eUmBM, vbTextCompare) > 0 And eUmBM = "00" Then ' ficou meio redundante
+            puladas = puladas + 1
+            If InStr(1, linhas(i + 1), eUmBM, vbTextCompare) <> BM Then
+                MudaPessoa = MudaPessoa + 1
+            End If
+            
+            
+        Else
+            MsgBox "Achamos o I3N , I1N , J"
+            
+        End If
+    
+    Next i
+    
+
+End Sub
+
+
