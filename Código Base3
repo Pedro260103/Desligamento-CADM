@@ -178,6 +178,7 @@ Sub grava()
     
     Dim SegundaInfo As String
     Dim Nome As String
+    Dim NomeFlutuante As String
     Dim BM As String
     Dim eUmBM As String
     Dim NovoConteudo As String
@@ -193,8 +194,9 @@ Sub grava()
     
     
     
-    
-    For i = 3 To UBound(linhas)
+    Dim contador As Integer
+    contador = 1
+    For i = 3 To 20 'UBound(linhas)
         Nome = Mid(linhas(i), 54, 70)
         BM = Mid(linhas(i), 124, 11)
         eUmBM = Mid(linhas(i), 124, 2)
@@ -207,25 +209,43 @@ Sub grava()
             
             
         Else
-            MsgBox "Achamos o I3N , I1N , J"
-            PrimeiraInfo = Mid(linhas(i - 1), 1, 244)
-            SegundaInfo = Mid(linhas(i - 1), 245, 116)
-            MsgBox SegundaInfo
-            SegundaInfo = Left(SegundaInfo, 1) & "1" & Right(SegundaInfo, Len(SegundaInfo) - 2)
-            NovoConteudo = PrimeiraInfo + SegundaInfo
-            MsgBox NovoConteudo
-            ' Abre o arquivo em modo de leitura e escrita
+            
+            NomeFlutuante = Mid(linhas(i + 1), 54, 70)
+            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" Then
+                
+                'MsgBox "Achamos o I3N , I1N , J"
+                PrimeiraInfo = Mid(linhas(i - contador), 1, 244)
+                SegundaInfo = Mid(linhas(i - contador), 245, 116)
+                'MsgBox SegundaInfo
+                SegundaInfo = Left(SegundaInfo, 1) & "1" & Right(SegundaInfo, Len(SegundaInfo) - 2)
+                NovoConteudo = PrimeiraInfo + SegundaInfo
+                'MsgBox NovoConteudo
+                ' Abre o arquivo em modo de leitura e escrita
                 Open LocalDoArquivo For Input As #NumArquivo
                 FileContent = Input$(LOF(1), #NumArquivo)
                 Close #NumArquivo
                 
                 ' Substitui a linha anterior pelo NovoConteudo
-                FileContent = Replace(FileContent, linhas(i - 1), NovoConteudo)
+                FileContent = Replace(FileContent, linhas(i - contador), NovoConteudo)
                 
                 ' Abre o arquivo em modo de escrita para gravar as alterações
                 Open LocalDoArquivo For Output As #NumArquivo
                 Print #NumArquivo, FileContent
                 Close #NumArquivo
+                contador = 1
+            Else
+            
+            
+            
+            contador = contador + 1
+            
+            
+            
+            End If
+                
+            
+            
+            
             
         End If
     
