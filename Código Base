@@ -32,10 +32,10 @@ Sub SEFIP()
     linhas = Split(FileContent, vbCrLf)
     
     Do While Range("A" & contador).Value <> ""
- 
-        For i = 0 To UBound(linhas)
         BM = Range("A" & contador).Value
         BM = Replace(BM, "-", "")
+        For i = 1055 To UBound(linhas)
+        
         If InStr(1, linhas(i), BM, vbTextCompare) > 0 Then
             MsgBox "Valor encontrado na posição " & i
       
@@ -46,7 +46,7 @@ Sub SEFIP()
             Codigo20 = Mid(linhas(i), 48, 2)
             DataDemissao = Range("D" & contador).Value
             DataDemissao = Replace(DataDemissao, "/", "")
-            CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador)
+            CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
             DataNacimento = Mid(linhas(i), 155, 8)
             Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
             ' Exibe as informações extraídas
@@ -59,13 +59,16 @@ Sub SEFIP()
             'End If
     
             ' Abre o arquivo em modo de adição (Append) para adicionar o novo conteúdo ao final do arquivo
-            Open LocaldoArquivo For Append As #NumArquivo
+            Open LocaldoArquivo For Append As #NumArquivo 'Append
             Print #NumArquivo, NovoConteudo
             Close #NumArquivo
      
+            ' Substitui a linha anterior pelo NovoConteudo
+            FileContent = Replace(FileContent, linhas(i), NovoConteudo)
+                
             contador = contador + 1 ' para na planilha passar para o BM de baixo
             If i > 1 Then
-              i = 0
+              i = 3
             End If
              
              
@@ -77,9 +80,6 @@ Sub SEFIP()
      
      Next i
  Loop
-
-End Sub
-
 
 
 
