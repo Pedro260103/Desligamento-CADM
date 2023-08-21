@@ -1,0 +1,182 @@
+Sub SEFIP()
+    Dim LocaldoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+     
+    
+    LocaldoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
+    NumArquivo = FreeFile
+    
+    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+ 
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+ 
+    Dim Codigo As String
+    Dim Pis As String
+    Dim Nome As String
+    Dim DataAdimissao As String
+    Dim Codigo20 As String
+    Dim CodigoDesligamento As String
+    Dim BM As String
+    Dim DataNacimento As String
+    Dim DataDemissao As String
+    Dim NovoConteudo As String
+    Dim linhas() As String
+    Dim contador As LongLong
+    contador = 2
+    linhas = Split(FileContent, vbCrLf)
+    
+    Do While Range("A" & contador).Value <> ""
+ 
+        For i = 0 To UBound(linhas)
+        BM = Range("A" & contador).Value
+        BM = Replace(BM, "-", "")
+        If InStr(1, linhas(i), BM, vbTextCompare) > 0 Then
+            MsgBox "Valor encontrado na posição " & i
+      
+            Codigo = Mid(linhas(i), 1, 18)
+            Pis = Mid(linhas(i), 33, 11) ' Ajuste para 11 caracteres
+            Nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
+            DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
+            Codigo20 = Mid(linhas(i), 48, 2)
+            DataDemissao = Range("D" & contador).Value
+            DataDemissao = Replace(DataDemissao, "/", "")
+            CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador)
+            DataNacimento = Mid(linhas(i), 155, 8)
+            Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
+            ' Exibe as informações extraídas
+            MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & Nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & BM & vbCrLf & "DataNacimento: " & DataNacimento
+    
+            ' Crie o novo conteúdo com as informações modificadas
+            NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(Nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 11) & Space(226) & "*"
+            'If BM = Mid(Linha, 124, 11) Then
+            'NovoConteudo = Linha & vbCrLf & NovoConteudo
+            'End If
+    
+            ' Abre o arquivo em modo de adição (Append) para adicionar o novo conteúdo ao final do arquivo
+            Open LocaldoArquivo For Append As #NumArquivo
+            Print #NumArquivo, NovoConteudo
+            Close #NumArquivo
+     
+            contador = contador + 1 ' para na planilha passar para o BM de baixo
+            If i > 1 Then
+              i = 0
+            End If
+             
+             
+            Else
+             i = i + 1 ' para no array ir pra proxima linha
+             
+     
+        End If
+     
+     Next i
+ Loop
+
+End Sub
+
+
+
+
+'demanda urgente
+
+
+Sub grava()
+    Dim LocalDoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+    LocalDoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
+    NumArquivo = FreeFile
+    
+    Open LocalDoArquivo For Input As #NumArquivo
+
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+    
+    
+    Linha = Trim(FileContent)
+    
+    Dim SegundaInfo As String
+    Dim Nome As String
+    Dim NomeFlutuante As String
+    Dim BM As String
+    Dim eUmBM As String
+    Dim NovoConteudo As String
+    Dim PrimeiraInfo As String
+    Dim linhas() As String
+    Dim MudaPessoa As LongLong
+    MudaPessoa = 0
+    Dim puladas As LongLong
+    puladas = 0
+    linhas = Split(FileContent, vbCrLf)
+    
+    
+    
+    
+    
+    Dim contador As Integer
+    contador = 1
+    For i = 3 To 9510  'UBound(linhas)
+        Nome = Mid(linhas(i), 54, 70)
+        BM = Mid(linhas(i), 124, 11)
+        eUmBM = Mid(linhas(i), 124, 2)
+        
+        If InStr(1, linhas(i), eUmBM, vbTextCompare) > 0 And eUmBM = "00" Then ' ficou meio redundante
+            puladas = puladas + 1
+            If InStr(1, linhas(i + 1), eUmBM, vbTextCompare) <> BM Then
+                MudaPessoa = MudaPessoa + 1
+                contador = 1
+            End If
+            
+            
+        Else
+            
+            NomeFlutuante = Mid(linhas(i + 1), 54, 70)
+            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" Then
+                
+                'MsgBox "Achamos o I3N , I1N , J"
+                PrimeiraInfo = Mid(linhas(i - contador), 1, 244)
+                SegundaInfo = Mid(linhas(i - contador), 245, 116)
+                'MsgBox SegundaInfo
+                SegundaInfo = Left(SegundaInfo, 1) & "1" & Right(SegundaInfo, Len(SegundaInfo) - 2)
+                NovoConteudo = PrimeiraInfo + SegundaInfo
+                'MsgBox NovoConteudo
+                ' Abre o arquivo em modo de leitura e escrita
+                Open LocalDoArquivo For Input As #NumArquivo
+                FileContent = Input$(LOF(1), #NumArquivo)
+                Close #NumArquivo
+                
+                ' Substitui a linha anterior pelo NovoConteudo
+                FileContent = Replace(FileContent, linhas(i - contador), NovoConteudo)
+                
+                ' Abre o arquivo em modo de escrita para gravar as alterações
+                Open LocalDoArquivo For Output As #NumArquivo
+                Print #NumArquivo, FileContent
+                Close #NumArquivo
+                contador = 1
+            Else
+            
+            
+            
+            contador = contador + 1
+            
+            
+            
+            End If
+                
+            
+            
+            
+            
+        End If
+    
+    Next i
+    
+MsgBox "Fim!"
+End Sub
