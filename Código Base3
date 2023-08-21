@@ -196,7 +196,7 @@ Sub grava()
     
     Dim contador As Integer
     contador = 1
-    For i = 3 To 20 'UBound(linhas)
+    For i = 3 To 9510  'UBound(linhas)
         Nome = Mid(linhas(i), 54, 70)
         BM = Mid(linhas(i), 124, 11)
         eUmBM = Mid(linhas(i), 124, 2)
@@ -205,6 +205,7 @@ Sub grava()
             puladas = puladas + 1
             If InStr(1, linhas(i + 1), eUmBM, vbTextCompare) <> BM Then
                 MudaPessoa = MudaPessoa + 1
+                contador = 1
             End If
             
             
@@ -251,5 +252,5 @@ Sub grava()
     
     Next i
     
-
+MsgBox "Fim!"
 End Sub
