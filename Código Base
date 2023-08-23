@@ -18,30 +18,30 @@ Sub SEFIP()
  
     Dim Codigo As String
     Dim Pis As String
-    Dim Nome As String
+    Dim nome As String
     Dim DataAdimissao As String
     Dim Codigo20 As String
     Dim CodigoDesligamento As String
-    Dim BM As String
+    Dim bm As String
     Dim DataNacimento As String
     Dim DataDemissao As String
     Dim NovoConteudo As String
     Dim linhas() As String
+    Dim UltimaLinha As Integer ' longlong
     Dim contador As LongLong
     contador = 2
     linhas = Split(FileContent, vbCrLf)
+    UltimaLinha = UBound(linhas)
+    
     
     Do While Range("A" & contador).Value <> ""
-        BM = Range("A" & contador).Value
-        BM = Replace(BM, "-", "")
-        For i = 1055 To UBound(linhas)
+        bm = Range("A" & contador).Value
+        bm = Replace(bm, "-", "")
         
-        If InStr(1, linhas(i), BM, vbTextCompare) > 0 Then
-            MsgBox "Valor encontrado na posição " & i
-      
+        For i = 747 To UBound(linhas)
             Codigo = Mid(linhas(i), 1, 18)
             Pis = Mid(linhas(i), 33, 11) ' Ajuste para 11 caracteres
-            Nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
+            nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
             DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
             Codigo20 = Mid(linhas(i), 48, 2)
             DataDemissao = Range("D" & contador).Value
@@ -49,22 +49,61 @@ Sub SEFIP()
             CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
             DataNacimento = Mid(linhas(i), 155, 8)
             Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
+        
+        If InStr(1, linhas(i), bm, vbTextCompare) > 0 Then 'And CodigosNullosDesligamento(linhas, i + 1) = True Then
+        
+        
+            MsgBox "Valor encontrado na posição " & i
+      
+            
             ' Exibe as informações extraídas
-            MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & Nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & BM & vbCrLf & "DataNacimento: " & DataNacimento
+            MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & bm & vbCrLf & "DataNacimento: " & DataNacimento
     
             ' Crie o novo conteúdo com as informações modificadas
-            NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(Nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 11) & Space(226) & "*"
-            'If BM = Mid(Linha, 124, 11) Then
+            NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 11) & Space(226) & "*"
+ 'Se BM = Médio (Linha, 124, 11) então
             'NovoConteudo = Linha & vbCrLf & NovoConteudo
-            'End If
-    
-            ' Abre o arquivo em modo de adição (Append) para adicionar o novo conteúdo ao final do arquivo
-            Open LocaldoArquivo For Append As #NumArquivo 'Append
-            Print #NumArquivo, NovoConteudo
+ «Acabar se
+          
+            Dim OriginalConteudo As String
+            OriginalConteudo = linhas(i)
+            Dim i2 As Integer
+            i2 = UltimaLinha
+            ReDim Preserve linhas(UBound(linhas))
+            linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        "
+            Dim c As Integer
+            c = 1
+            Dim bmTXT As String
+            bmTXT = Mid(linhas(i + 1), 124, 2)
+            Do While bmTXT <> "00"
+                c = c + 1
+                bmTXT = Mid(linhas(i + c), 124, 2)
+                
+            Loop
+            ' Atualiza a linha no array
+                ' Adiciona uma linha em branco ao final do array
+                Do While i2 >= i
+                    linhas(i2) = linhas(i2 - 1)
+                    i2 = i2 - 1
+                Loop
+                linhas(i) = OriginalConteudo
+                linhas(i + c) = NovoConteudo
+                
+            ' Reescreve o arquivo com o conteúdo atualizado
+            Open LocaldoArquivo For Output As #NumArquivo
+            Print #NumArquivo, Join(linhas, vbCrLf) ' Converte o array de volta para uma única string com linhas separadas por vbCrLf
             Close #NumArquivo
+    
+    
+    
+ ' Substitui a linha anterior pelo NovoConteúdo
+            'FileContent = Replace(FileContent, linhas(i), NovoConteudo)
+            ' Abre o arquivo em modo de adição (Append) para adicionar o novo conteúdo ao final do arquivo
+            'Open LocaldoArquivo For Append As #NumArquivo 'Append
+            'Print #NumArquivo, NovoConteudo
+            'Close #NumArquivo
      
-            ' Substitui a linha anterior pelo NovoConteudo
-            FileContent = Replace(FileContent, linhas(i), NovoConteudo)
+            
                 
             contador = contador + 1 ' para na planilha passar para o BM de baixo
             If i > 1 Then
@@ -72,14 +111,18 @@ Sub SEFIP()
             End If
              
              
-            Else
-             i = i + 1 ' para no array ir pra proxima linha
+            'ElseIf CodigosNullosDesligamento(linhas, i + 1) = False Then ' Acho que não precisa do else
+            
+            
              
-     
+            
+            
         End If
      
      Next i
  Loop
+
+End Sub
 
 
 
