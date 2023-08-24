@@ -23,6 +23,7 @@ Sub SEFIP()
     Dim Codigo20 As String
     Dim CodigoDesligamento As String
     Dim bm As String
+    Dim bmTXT As String
     Dim DataNacimento As String
     Dim DataDemissao As String
     Dim NovoConteudo As String
@@ -39,11 +40,13 @@ Sub SEFIP()
  bm = Range("A" & contador). Value
         bm = Replace(bm, "-", "")
         bm = Replace(bm, "X", "0")
+        nome = Range("B" & contador).Value
         
         For i = 3 To UltimaLinha
  Code = Mid(lines(i), 1, 18)
  Pis = Mid(lines(i), 33, 11) ' Adjustment to 11 characters
- name = Mid(lines(i), 54, 70) ' Adjustment to 30 characters
+        'nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
+        bmTXT = Mid(linhas(i), 127, 8)
  Admission Date = Mid(rows(i), 44, 8) ' Extracts the Admission Date correctly
         Codigo20 = Mid(linhas(i), 48, 2)
  DataDemissao = Range("D" & contador). Value
@@ -52,10 +55,10 @@ Sub SEFIP()
         DataNacimento = Mid(linhas(i), 155, 8)
  Code = Left(Code, 1) & "2" & Right(Code, Len(Code) - 2)
         
-        If InStr(1, linhas(i), bm, vbTextCompare) > 0 And InStr(1, linhas(i), nome, vbTextCompare) > 0 Then
+        If bmTXT = bm And InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
         
         
- MsgBox "Value found in position " & i
+ 'MsgBox "Value found in position" & i
       
             
  ' Displays the extracted information
@@ -79,8 +82,15 @@ Sub SEFIP()
                 
                 Dim PisTXT As String
  PisTXT = Mid(lines(i2 - 1), 33, 11)
-                'Dim bmCima As String
- 'bmCima = Mid(lines(i2 - 1), 127, 8)
+                Dim bmBaixo As String
+                bmBaixo = Mid(linhas(i + 1), 126, 2)
+                Dim PisBaixo As String
+                PisBaixo = Mid(linhas(i + 1), 33, 11)
+                
+                If PisBaixo = Pis And bmBaixo = "00" Then
+ Range("A" & contador). Interior.Color = vbYellow
+                End If
+                
                 If PisTXT = Pis And umaVez = 0 Then 'Or bmCima = bm Then
  lines(i2) = NewContent
                     umaVez = umaVez + 1
@@ -138,14 +148,6 @@ End Sub
 
 
 
-
-
-
-
-
-
-
-
 'urgent demand
 
 
@@ -175,7 +177,7 @@ Sub grava()
     Dim linhas() As String
     Dim MudaPessoa As LongLong
     MudaPessoa = 0
- Dim puladas como LongLong
+ Dim puladas as LongLong
     puladas = 0
     linhas = Split(FileContent, vbCrLf)
     
