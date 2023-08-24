@@ -34,9 +34,11 @@ Sub SEFIP()
     UltimaLinha = UBound(linhas)
     
     
+    
     Do While Range("A" & contador).Value <> ""
         bm = Range("A" & contador).Value
         bm = Replace(bm, "-", "")
+        bm = Replace(bm, "X", "0")
         
         For i = 3 To UltimaLinha
         Codigo = Mid(linhas(i), 1, 18)
@@ -50,7 +52,7 @@ Sub SEFIP()
         DataNacimento = Mid(linhas(i), 155, 8)
         Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
         
-        If InStr(1, linhas(i), bm, vbTextCompare) > 0 Then 'And CodigosNullosDesligamento(linhas, i + 1) = True Then
+        If InStr(1, linhas(i), bm, vbTextCompare) > 0 And InStr(1, linhas(i), nome, vbTextCompare) > 0 Then
         
         
             MsgBox "Valor encontrado na posição " & i
@@ -61,9 +63,7 @@ Sub SEFIP()
     
             ' Crie o novo conteúdo com as informações modificadas
             NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 11) & Space(225) & "*"
- 'Se BM = Médio (Linha, 124, 11) então
-            'NovoConteudo = Linha & vbCrLf & NovoConteudo
-  
+ 
           
             Dim OriginalConteudo As String
             OriginalConteudo = linhas(i)
@@ -71,9 +71,7 @@ Sub SEFIP()
             i2 = UltimaLinha
             ReDim Preserve linhas(UBound(linhas))
             linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        "
-            'Dim c As Integer
-            'c = 1
- 
+            
                 ' Adiciona uma linha em branco ao final do array
                 Dim umaVez As Integer
                 umaVez = 0
@@ -102,36 +100,26 @@ Sub SEFIP()
             Close #NumArquivo
             
     
-    
-    
- ' Substitui a linha anterior pelo NovoConteúdo
-            'FileContent = Replace(FileContent, linhas(i), NovoConteudo)
-            ' Abre o arquivo em modo de adição (Append) para adicionar o novo conteúdo ao final do arquivo
-            'Open LocaldoArquivo For Append As #NumArquivo 'Append
-            'Print #NumArquivo, NovoConteudo
-            'Close #NumArquivo
-     
-            
                 
             contador = contador + 1 ' para na planilha passar para o BM de baixo
-            'If i > 1 Then
-              'i = 3
-            'End If
-             
-             
-            'ElseIf CodigosNullosDesligamento(linhas, i + 1) = False Then ' Acho que não precisa do else
-            
             
              
             i = UltimaLinha
+            Else
+                If i = UltimaLinha Then
+                    MsgBox "Não encontrado : " & nome & " " & bm
+                    'i = UltimaLinha
+                    Range("A" & contador).Interior.Color = vbRed
+                    contador = contador + 1
+                End If
             
         End If
      
      Next i
+     
  Loop
 
 End Sub
-
 
 
 
