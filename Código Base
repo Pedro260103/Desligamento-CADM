@@ -8,15 +8,15 @@ Sub SEFIP()
     LocaldoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
     NumArquivo = FreeFile
     
-    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+ Open FileLocation For Input As #NumArquivo ' Opens the file in read mode
     
     FileContent = Input$(LOF(1), #NumArquivo)
     Close #NumArquivo
  
-    ' Extrai informações da linha
-    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+ ' Extracts information from the line
+ Line = Trim(FileContent) ' Removes whitespace at the beginning and end
  
-    Dim Codigo As String
+ Dim Code As String
     Dim Pis As String
     Dim nome As String
     Dim DataAdimissao As String
@@ -35,56 +35,58 @@ Sub SEFIP()
     
     
     
-    Do While Range("A" & contador).Value <> ""
-        bm = Range("A" & contador).Value
+ Do While Range("A" & contador). Value <> ""
+ bm = Range("A" & contador). Value
         bm = Replace(bm, "-", "")
         bm = Replace(bm, "X", "0")
         
         For i = 3 To UltimaLinha
-        Codigo = Mid(linhas(i), 1, 18)
-        Pis = Mid(linhas(i), 33, 11) ' Ajuste para 11 caracteres
-        nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
-        DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
+ Code = Mid(lines(i), 1, 18)
+ Pis = Mid(lines(i), 33, 11) ' Adjustment to 11 characters
+ name = Mid(lines(i), 54, 70) ' Adjustment to 30 characters
+ Admission Date = Mid(rows(i), 44, 8) ' Extracts the Admission Date correctly
         Codigo20 = Mid(linhas(i), 48, 2)
-        DataDemissao = Range("D" & contador).Value
+ DataDemissao = Range("D" & contador). Value
         DataDemissao = Replace(DataDemissao, "/", "")
         CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
         DataNacimento = Mid(linhas(i), 155, 8)
-        Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
+ Code = Left(Code, 1) & "2" & Right(Code, Len(Code) - 2)
         
         If InStr(1, linhas(i), bm, vbTextCompare) > 0 And InStr(1, linhas(i), nome, vbTextCompare) > 0 Then
         
         
-            MsgBox "Valor encontrado na posição " & i
+ MsgBox "Value found in position " & i
       
             
-            ' Exibe as informações extraídas
+ ' Displays the extracted information
             MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & bm & vbCrLf & "DataNacimento: " & DataNacimento
     
-            ' Crie o novo conteúdo com as informações modificadas
+ ' Create the new content with the modified information
             NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 11) & Space(225) & "*"
  
           
             Dim OriginalConteudo As String
-            OriginalConteudo = linhas(i)
+ OriginalContent = lines(i)
             Dim i2 As Integer
             i2 = UltimaLinha
             ReDim Preserve linhas(UBound(linhas))
-            linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        "
+ lines(UBound(lines)) = " "
             
-                ' Adiciona uma linha em branco ao final do array
+ ' Adds a blank line to the end of the array
                 Dim umaVez As Integer
                 umaVez = 0
-            Do While i2 >= i 'InStr(1, linhas(i2), nome, vbTextCompare) = 0
+ Do While i2 >= i 'InStr(1, lines(i2), name, vbTextCompare) = 0
                 
                 Dim PisTXT As String
-                PisTXT = Mid(linhas(i2 - 1), 33, 11)
-                If PisTXT = Pis And umaVez = 0 Then
-                    linhas(i2) = NovoConteudo
+ PisTXT = Mid(lines(i2 - 1), 33, 11)
+                'Dim bmCima As String
+ 'bmCima = Mid(lines(i2 - 1), 127, 8)
+                If PisTXT = Pis And umaVez = 0 Then 'Or bmCima = bm Then
+ lines(i2) = NewContent
                     umaVez = umaVez + 1
                     i2 = i - 1
                 Else
-                    linhas(i2) = linhas(i2 - 1)
+ Lines(i2) = lines(I2 - 1)
                     i2 = i2 - 1
                             
                 End If
@@ -92,24 +94,24 @@ Sub SEFIP()
                     
             Loop
             
- 'linhas(i - 1) = OriginalConteúdo
+ 'lines(i - 1) = OriginalContent
                 
-            ' Reescreve o arquivo com o conteúdo atualizado
+ ' Rewrites the file with the updated content
             Open LocaldoArquivo For Output As #NumArquivo
-            Print #NumArquivo, Join(linhas, vbCrLf) ' Converte o array de volta para uma única string com linhas separadas por vbCrLf
+ Print #NumArquivo, Join(lines, vbCrLf) ' Converts the array back to a single string with lines separated by vbCrLf
             Close #NumArquivo
             
     
                 
-            contador = contador + 1 ' para na planilha passar para o BM de baixo
+ counter = counter + 1' for in the worksheet to move to the bottom BM
             
              
             i = UltimaLinha
             Else
                 If i = UltimaLinha Then
-                    MsgBox "Não encontrado : " & nome & " " & bm
+ MsgBox "Not Found : " & name & " " & bm
                     'i = UltimaLinha
-                    Range("A" & contador).Interior.Color = vbRed
+ Range("A" & contador). Interior.Color = vbRed
                     contador = contador + 1
                 End If
             
@@ -144,35 +146,31 @@ End Sub
 
 
 
-
-
-
-
-'demanda urgente
+'urgent demand
 
 
 Sub grava()
- Dim LocalDoArquivo como sequência de caracteres
- Dim NumArquivo como inteiro
- Dim FileContent como cadeia de caracteres
+ Dim FileLocation as string
+ Dim NumFile as integer
+ Dim FileContent as string
     Dim Linha As String
     LocalDoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
     NumArquivo = FreeFile
     
- Abra LocalDoArquivo para entrada como #NumArquivo
+ Open LocalDoArquivo for entry as #NumArquivo
 
     FileContent = Input$(LOF(1), #NumArquivo)
- Fechar #NumArquivo
+ Close #NumArquivo
     
     
-    Linha = Trim(FileContent)
+ Line = Trim(FileContent)
     
  Dim SegundaInfo Como String
     Dim Nome As String
  Dim NomeFlutuante Como String
- Dim BM como corda
- Dim eUmBM como corda
- Dim NovoConteudo Como Corda
+ Dim BM as rope
+ Dim eUmBM as string
+ Dim NovoConteudo as Corda
  Dim PrimeiraInfo Como String
     Dim linhas() As String
     Dim MudaPessoa As LongLong
