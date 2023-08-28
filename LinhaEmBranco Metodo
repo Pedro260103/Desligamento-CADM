@@ -1,11 +1,11 @@
-Sub AddLinhasEmBranco(Tamanho As Integer)
+Sub AddLinhasEmBranco()
     Dim FilePath As String
     Dim FileContent As String
     Dim FileSize As Long
     Dim i As Long
     
     ' Especifique o caminho para o arquivo de texto existente
-    FilePath = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\EM ANDAMENTO\07-2021-CADM\SEFIP - Pedro.RE"
+    FilePath = "C:\Users\Thais\Desktop\SEFIP\07\SEFIP - Pedro.RE"
     
     ' Leia o conteúdo do arquivo existente
     Open FilePath For Input As #1
@@ -24,7 +24,7 @@ Sub AddLinhasEmBranco(Tamanho As Integer)
     ' Abra o arquivo em modo de saída (para gravação) para acrescentar asteriscos
     Open FilePath For Append As #1
     Dim Metade As Long
-    Metade = FileSize \ 2
+    Metade = FileSize '\ 2
     ' Escreva os asteriscos após o conteúdo existente
     For i = 0 To (Metade + 1)
         Print #1, "*" '"                                                                                                                                                                                                                                                                                                                                                                        "
@@ -33,6 +33,6 @@ Sub AddLinhasEmBranco(Tamanho As Integer)
     ' Feche o arquivo
     Close #1
     ' Salve o arquivo
+    MsgBox Metade + 1
     ActiveWorkbook.Save
 End Sub
-
