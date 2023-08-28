@@ -1,25 +1,28 @@
 Sub SEFIP()
+
     Dim LocaldoArquivo As String
     Dim NumArquivo As Integer
     Dim FileContent As String
     Dim Linha As String
      
     
-    LocaldoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
+    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\EM ANDAMENTO\07-2021-CADM\SEFIP - Pedro.RE"
     NumArquivo = FreeFile
     
- Open FileLocation For Input As #NumArquivo ' Opens the file in read mode
+    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
     
     FileContent = Input$(LOF(1), #NumArquivo)
     Close #NumArquivo
  
- ' Extracts information from the line
- Line = Trim(FileContent) ' Removes whitespace at the beginning and end
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
  
- Dim Code As String
+    Dim Codigo As String
     Dim Pis As String
     Dim nome As String
+    Dim nomeTXT As String
     Dim DataAdimissao As String
+    Dim DataAdimissaoTXT As String
     Dim Codigo20 As String
     Dim CodigoDesligamento As String
     Dim bm As String
@@ -28,112 +31,111 @@ Sub SEFIP()
     Dim DataDemissao As String
     Dim NovoConteudo As String
     Dim linhas() As String
-    Dim UltimaLinha As Integer ' longlong
-    Dim contador As LongLong
-    contador = 2
+    Dim Contador As LongLong
+    Dim UltimaLinhaCodigo90 As String
+    Contador = 2
     linhas = Split(FileContent, vbCrLf)
-    UltimaLinha = UBound(linhas)
     
     
+    UltimaLinhaCodigo90 = linhas(UBound(linhas) - 1)
+    AddLinhasEmBranco (UBound(linhas))
     
- Do While Range("A" & contador). Value <> ""
- bm = Range("A" & contador). Value
+    Do While Range("A" & Contador).Value <> ""
+        bm = Range("A" & Contador).Value
         bm = Replace(bm, "-", "")
         bm = Replace(bm, "X", "0")
-        nome = Range("B" & contador).Value
+        nome = Range("B" & Contador).Value
+        DataAdmissao = Range("C" & Contador).Value
+        DataAdmissao = Replace(DataAdmissao, "/", "")
         
-        For i = 3 To UltimaLinha
- Code = Mid(lines(i), 1, 18)
- Pis = Mid(lines(i), 33, 11) ' Adjustment to 11 characters
+        For i = 3 To UBound(linhas) '6966
         'nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
+        nomeTXT = Mid(linhas(i), 54, 70)
         bmTXT = Mid(linhas(i), 127, 8)
- Admission Date = Mid(rows(i), 44, 8) ' Extracts the Admission Date correctly
+        DataAdimissaoTXT = Mid(linhas(i), 44, 8)
+        
+        
+        If bmTXT = bm And DataAdimissaoTXT = DataAdmissao Or InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
+        Codigo = Mid(linhas(i), 1, 18)
+        Pis = Mid(linhas(i), 33, 11) ' Ajuste para 11 caracteres
+        'DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
         Codigo20 = Mid(linhas(i), 48, 2)
- DataDemissao = Range("D" & contador). Value
+        DataDemissao = Range("D" & Contador).Value
         DataDemissao = Replace(DataDemissao, "/", "")
-        CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
+        CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, Contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
         DataNacimento = Mid(linhas(i), 155, 8)
- Code = Left(Code, 1) & "2" & Right(Code, Len(Code) - 2)
+        Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
         
-        If bmTXT = bm And InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
-        
-        
- 'MsgBox "Value found in position" & i
+            'MsgBox "Valor encontrado na posição " & i
       
             
- ' Displays the extracted information
-            MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & bm & vbCrLf & "DataNacimento: " & DataNacimento
+            ' Exibe as informações extraídas
+            'MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & bm & vbCrLf & "DataNacimento: " & DataNacimento
     
- ' Create the new content with the modified information
-            NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & Mid(nome & Space(70), 1, 70) & Mid(CodigoDesligamento, 1, 11) & Space(225) & "*"
+            ' Crie o novo conteúdo com as informações modificadas
+            NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & nomeTXT & Mid(CodigoDesligamento, 1, 11) & Space(225) & "*"
  
-          
+            
             Dim OriginalConteudo As String
- OriginalContent = lines(i)
-            Dim i2 As Integer
-            i2 = UltimaLinha
+            OriginalConteudo = linhas(i)
             ReDim Preserve linhas(UBound(linhas))
- lines(UBound(lines)) = " "
-            
- ' Adds a blank line to the end of the array
-                Dim umaVez As Integer
-                umaVez = 0
- Do While i2 >= i 'InStr(1, lines(i2), name, vbTextCompare) = 0
-                
-                Dim PisTXT As String
- PisTXT = Mid(lines(i2 - 1), 33, 11)
-                Dim bmBaixo As String
-                bmBaixo = Mid(linhas(i + 1), 126, 2)
-                Dim PisBaixo As String
-                PisBaixo = Mid(linhas(i + 1), 33, 11)
-                
-                If PisBaixo = Pis And bmBaixo = "00" Then
- Range("A" & contador). Interior.Color = vbYellow
-                End If
-                
-                If PisTXT = Pis And umaVez = 0 Then 'Or bmCima = bm Then
- lines(i2) = NewContent
-                    umaVez = umaVez + 1
-                    i2 = i - 1
+            linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        " & vbCrLf
+            Dim DataAdmissaoTXTCima As String
+            Dim bmTXTCima As String
+            Dim PisTXTCima As String
+            ' Adiciona uma linha em branco ao final do array
+            For c = UBound(linhas) To i Step -1
+            DataAdmissaoTXTCima = Mid(linhas(c - 1), 44, 8)
+            bmTXTCima = Mid(linhas(c - 1), 127, 8)
+            PisTXTCima = Mid(linhas(c - 1), 33, 11)
+                If bm = bmTXTCima And DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima Then
+                    linhas(c) = NovoConteudo
+                    Exit For
                 Else
- Lines(i2) = lines(I2 - 1)
-                    i2 = i2 - 1
-                            
+                    If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima Then ' posso tambem colocar o Pis para previnir erros de indentificação
+                        linhas(c) = NovoConteudo
+                        Range("A" & Contador).Interior.Color = vbYellow
+                        Exit For
+                    Else
+                        linhas(c) = linhas(c - 1)
+                    End If
+                    
                 End If
-                    
-                    
-            Loop
-            
- 'lines(i - 1) = OriginalContent
                 
- ' Rewrites the file with the updated content
+            
+            Next c
+            
+                
+                
+            
+            ' Reescreve o arquivo com o conteúdo atualizado
             Open LocaldoArquivo For Output As #NumArquivo
- Print #NumArquivo, Join(lines, vbCrLf) ' Converts the array back to a single string with lines separated by vbCrLf
+            Print #NumArquivo, Join(linhas, vbCrLf) ' Converte o array de volta para uma única string com linhas separadas por vbCrLf
             Close #NumArquivo
-            
-    
+
                 
- counter = counter + 1' for in the worksheet to move to the bottom BM
+            Contador = Contador + 1 ' para na planilha passar para o BM de baixo
             
-             
-            i = UltimaLinha
+            
+            Exit For
             Else
-                If i = UltimaLinha Then
- MsgBox "Not Found : " & name & " " & bm
+                If i = UBound(linhas) Then
+                    'MsgBox "Não encontrado : " & nome & " " & bm
                     'i = UltimaLinha
- Range("A" & contador). Interior.Color = vbRed
-                    contador = contador + 1
+                    Range("A" & Contador).Interior.Color = vbRed
+                    Contador = Contador + 1
+                    Exit For
                 End If
             
         End If
      
      Next i
+     i = 3
+     
      
  Loop
 
 End Sub
-
-
 
 
 
