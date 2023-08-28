@@ -4,7 +4,7 @@ Function MotivoDesligamentoCodigo(d As String, c As LongLong) As String
             MotivoDesligamentoCodigo = "I3" + d + "N"
          
         Case "RESCISAO A PEDIDO"
-            MotivoDesligamentoCodigo = " J" + d
+            MotivoDesligamentoCodigo = " J" + d + " "
          
         Case "EXONERAÇÃO POR INICIATIVA DO EXECUTIVO"
             MotivoDesligamentoCodigo = "I1" + d + "N"
