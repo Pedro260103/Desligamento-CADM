@@ -38,7 +38,7 @@ Sub SEFIP()
     
     
     UltimaLinhaCodigo90 = linhas(UBound(linhas) - 1)
-    AddLinhasEmBranco (UBound(linhas))
+    'AddLinhasEmBranco (UBound(linhas))
     
     Do While Range("A" & Contador).Value <> ""
         bm = Range("A" & Contador).Value
