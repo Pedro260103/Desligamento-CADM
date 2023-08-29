@@ -1,5 +1,4 @@
-Sub SEFIP()
-
+Sub SEFIP05()
     Dim LocaldoArquivo As String
     Dim NumArquivo As Integer
     Dim FileContent As String
@@ -33,6 +32,10 @@ Sub SEFIP()
     Dim linhas() As String
     Dim Contador As LongLong
     Dim UltimaLinhaCodigo90 As String
+    Dim DataAdmissaoTXTCima As String
+    Dim bmTXTCima As String
+    Dim PisTXTCima As String
+    Dim OriginalConteudo As String
     Contador = 2
     linhas = Split(FileContent, vbCrLf)
     
@@ -55,7 +58,7 @@ Sub SEFIP()
         DataAdimissaoTXT = Mid(linhas(i), 44, 8)
         
         
-        If bmTXT = bm And DataAdimissaoTXT = DataAdmissao Or InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
+        If bmTXT = bm And DataAdimissaoTXT = DataAdmissao Then 'Or InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
         Codigo = Mid(linhas(i), 1, 18)
         Pis = Mid(linhas(i), 33, 11) ' Ajuste para 11 caracteres
         'DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
@@ -76,13 +79,11 @@ Sub SEFIP()
             NovoConteudo = Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & nomeTXT & Mid(CodigoDesligamento, 1, 11) & Space(225) & "*"
  
             
-            Dim OriginalConteudo As String
+            
             OriginalConteudo = linhas(i)
             ReDim Preserve linhas(UBound(linhas))
             linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        " & vbCrLf
-            Dim DataAdmissaoTXTCima As String
-            Dim bmTXTCima As String
-            Dim PisTXTCima As String
+            
             ' Adiciona uma linha em branco ao final do array
             For c = UBound(linhas) To i Step -1
             DataAdmissaoTXTCima = Mid(linhas(c - 1), 44, 8)
@@ -90,6 +91,7 @@ Sub SEFIP()
             PisTXTCima = Mid(linhas(c - 1), 33, 11)
                 If bm = bmTXTCima And DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima Then
                     linhas(c) = NovoConteudo
+                    Range("A" & Contador).Interior.Color = vbGreen
                     Exit For
                 Else
                     If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima Then ' posso tambem colocar o Pis para previnir erros de indentificação
@@ -114,7 +116,7 @@ Sub SEFIP()
             Close #NumArquivo
 
                 
-            Contador = Contador + 1 ' para na planilha passar para o BM de baixo
+                Contador = Contador + 1 ' para na planilha passar para o BM de baixo
             
             
             Exit For
@@ -131,6 +133,7 @@ Sub SEFIP()
      
      Next i
      i = 3
+     
      
      
  Loop
