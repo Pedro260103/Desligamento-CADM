@@ -34,7 +34,7 @@ Sub grava()
     
     Dim contador As Integer
     contador = 1
-    For i = 3 To 9510  'UBound(linhas)
+    For i = 3 To UBound(linhas)
         Nome = Mid(linhas(i), 54, 70)
         BM = Mid(linhas(i), 124, 11)
         eUmBM = Mid(linhas(i), 124, 2)
