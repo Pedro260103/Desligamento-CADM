@@ -1,0 +1,124 @@
+Sub VermelhooValeriaCorrecao()
+    Dim LocaldoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+     
+    
+    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-RETIFICADORAS\07-2021-(2ª Retificadora)\CADM\SEFIP - teste.RE"
+    NumArquivo = FreeFile
+    
+    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+ 
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+ 
+    Dim Codigo As String
+    Dim Pis As String
+    Dim nome As String
+    Dim nomeTXT As String
+    Dim DataAdimissao As String
+    Dim DataAdimissaoTXT As String
+    Dim Codigo20 As String
+    Dim CodigoDesligamento As String
+    Dim bm As String
+    Dim bmTXT As String
+    Dim DataNacimento As String
+    Dim DataDemissao As String
+    Dim NovoConteudo As String
+    Dim linhas() As String
+    Dim Contador As LongLong
+    Dim UltimaLinhaCodigo90 As String
+    Dim DataAdmissaoTXTCima As String
+    Dim bmTXTCima As String
+    Dim PisTXTCima As String
+    Dim OriginalConteudo As String
+    Contador = 2
+    linhas = Split(FileContent, vbCrLf)
+    
+    
+    UltimaLinhaCodigo90 = linhas(UBound(linhas) - 1)
+    'AddLinhasEmBranco (UBound(linhas))
+    
+    Do While Range("A" & Contador).Value <> ""
+        bm = Range("A" & Contador).Value
+        bm = Replace(bm, "-", "")
+        bm = Replace(bm, "X", "0")
+        nome = Range("B" & Contador).Value
+        DataAdmissao = Range("C" & Contador).Value
+        DataAdmissao = Replace(DataAdmissao, "/", "")
+        'i = 3675
+        For i = 3 To UBound(linhas) '6966
+        'nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
+        nomeTXT = Mid(linhas(i), 54, 70)
+        bmTXT = Mid(linhas(i), 127, 8)
+        DataAdimissaoTXT = Mid(linhas(i), 44, 8)
+        
+        
+        If bmTXT = bm And Range("A" & Contador).Interior.Color = vbRed Then 'Or Range("B" & Contador).Interior.Color = RGB(255, 255, 255) Then 'Or InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
+                    OriginalConteudo = linhas(i)
+            
+            ' Substituir os caracteres na posição 22 por 6 zeros
+            OriginalConteudo = Left(OriginalConteudo, 176) & "000001" & Mid(OriginalConteudo, 183) ' 177 183
+            
+            ' Substituir os caracteres na posição 57 por 5 zeros
+            OriginalConteudo = Left(OriginalConteudo, 211) & "00000" & Mid(OriginalConteudo, 217) ' 212 217
+            
+            ' Substituir os caracteres na posição 71 por 6 zeros
+            OriginalConteudo = Left(OriginalConteudo, 225) & "000000" & Mid(OriginalConteudo, 232) ' 226 232
+            
+            
+            
+            ReDim Preserve linhas(UBound(linhas))
+            linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        " & vbCrLf
+            
+                    
+            linhas(i) = OriginalConteudo
+            Range("A" & Contador).Interior.Color = RGB(146, 208, 80)
+            Range("G" & Contador).Interior.Color = vbRed
+            Range("H" & Contador).Value = OriginalConteudo
+            Range("I" & Contador).Value = NovoConteudo
+        
+          
+                
+            
+            ' Reescreve o arquivo com o conteúdo atualizado
+            Open LocaldoArquivo For Output As #NumArquivo
+            Print #NumArquivo, Join(linhas, vbCrLf) ' Converte o array de volta para uma única string com linhas separadas por vbCrLf
+            Close #NumArquivo
+
+                
+            Contador = Contador + 1 ' para na planilha passar para o BM de baixo
+            
+            
+            Exit For
+            Else
+                If i = UBound(linhas) Then
+                    'MsgBox "Não encontrado : " & nome & " " & bm
+                    'i = UltimaLinha
+                    'Range("A" & Contador).Interior.Color = vbRed
+                    Contador = Contador + 1
+                    'Exit For
+                End If
+            
+        End If
+     
+     Next i
+     'i = 3
+     'Contador = Contador + 1
+     
+     
+     
+ Loop
+
+End Sub
+
+
+
+
+
+
+
