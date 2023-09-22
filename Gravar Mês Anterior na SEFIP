@@ -1,0 +1,195 @@
+
+Sub GravarMesAnterior()
+    Dim LocaldoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+     
+    
+    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-RETIFICADORAS\09-2021-(2ª Retificadora)\CADM\SEFIP - Código.RE"
+    NumArquivo = FreeFile
+    
+    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+ 
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+ 
+    Dim Codigo As String
+    Dim Pis As String
+    Dim nome As String
+    Dim nomeTXT As String
+    Dim DataAdimissao As String
+    Dim DataAdimissaoTXT As String
+    Dim Codigo20 As String
+    Dim CodigoDesligamento As String
+    Dim bm As String
+    Dim bmTXT As String
+    Dim DataNacimento As String
+    Dim DataDemissao As String
+    Dim NovoConteudo As String
+    Dim linhas() As String
+    Dim contador As LongLong
+    Dim UltimaLinhaCodigo90 As String
+    Dim DataAdmissaoTXTCima As String
+    Dim bmTXTCima As String
+    Dim PisTXTCima As String
+    Dim OriginalConteudo As String
+    contador = 2
+    linhas = Split(FileContent, vbCrLf)
+    Dim HValorOriginal As String
+    
+    Dim IValorDesligamento As String
+    
+    
+    UltimaLinhaCodigo90 = linhas(UBound(linhas) - 1)
+    'AddLinhasEmBranco (UBound(linhas))
+    
+    Do While Range("A" & contador).Value <> ""
+        bm = Range("A" & contador).Value
+        bm = Replace(bm, "-", "")
+        bm = Replace(bm, "X", "0")
+        nome = Range("B" & contador).Value
+        DataAdmissao = Range("C" & contador).Value
+        DataAdmissao = Replace(DataAdmissao, "/", "")
+        HValorOriginal = Range("H" & contador).Value
+        IValorDesligamento = Range("I" & contador).Value
+        
+        If Range("A" & contador).Interior.Color = vbRed Then
+        
+            For i = 3 To UBound(linhas) '6966
+            'nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
+            nomeTXT = Mid(HValorOriginal, 54, 70)
+            bmTXT = Mid(HValorOriginal, 127, 8)
+            DataAdimissaoTXT = Mid(HValorOriginal, 44, 8)
+            
+            
+            'If bmTXT = bm And DataAdimissaoTXT = DataAdmissao Then 'Or InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
+            Codigo = Mid(HValorOriginal, 1, 18)
+            Pis = Mid(HValorOriginal, 33, 11) ' Ajuste para 11 caracteres
+            'DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
+            Codigo20 = Mid(HValorOriginal, 48, 2)
+            DataDemissao = Range("D" & contador).Value
+            DataDemissao = Replace(DataDemissao, "/", "")
+            CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
+            DataNacimento = Mid(HValorOriginal, 155, 8)
+            ''Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
+            
+                'MsgBox "Valor encontrado na posição " & i
+          
+                
+                ' Exibe as informações extraídas
+                'MsgBox "Código: " & Codigo & vbCrLf & "Pis: " & Pis & vbCrLf & "Nome: " & nome & vbCrLf & "DataAdmissao: " & DataAdmissao & vbCrLf & "DataDemissao: " & DataDemissao & vbCrLf & "Codigo20: " & Codigo20 & vbCrLf & "BM: " & bm & vbCrLf & "DataNacimento: " & DataNacimento
+        
+                ' Crie o novo conteúdo com as informações modificadas
+                NovoConteudo = IValorDesligamento 'Codigo & Space(14) & Mid(Pis & Space(11), 1, 11) & Mid(DataAdmissao & Space(8), 1, 8) & Codigo20 & nomeTXT & Mid(CodigoDesligamento, 1, 11) & Space(225) & "*"
+     
+                
+                
+                OriginalConteudo = HValorOriginal
+                
+                
+                
+                OriginalConteudo = Left(OriginalConteudo, 175) & "0000001" & Mid(OriginalConteudo, 183) ' 177 183
+                
+                ' Substituir os caracteres na posição 57 por 5 zeros
+                OriginalConteudo = Left(OriginalConteudo, 210) & "000000" & Mid(OriginalConteudo, 217) ' 212 217
+                
+                ' Substituir os caracteres na posição 71 por 6 zeros
+                OriginalConteudo = Left(OriginalConteudo, 224) & "0000000" & Mid(OriginalConteudo, 232) ' 226 232
+                ' Adiciona uma linha em branco ao final do array
+                
+                
+                ReDim Preserve linhas(UBound(linhas))
+                'linhas(UBound(linhas)) = "                                                                                                                                                                                                                                                                                                                                                                        " & vbCrLf
+                
+                
+                For c = UBound(linhas) To i Step -1
+                DataAdmissaoTXTCima = Mid(linhas(c - 1), 44, 8)
+                bmTXTCima = Mid(linhas(c - 1), 127, 8)
+                PisTXTCima = Mid(linhas(c - 1), 33, 11)
+                
+                Dim PisInt As String
+                Dim PisTXTCimaInt As String
+                
+                If PisTXTCima <> "*" And PisTXTCima <> "" And Pis <> "" And Pis <> "*" Then
+                    PisInt = ConverterStringParaInteger(Pis)
+                    PisTXTCimaInt = ConverterStringParaInteger(PisTXTCima)
+                    If PisInt > PisTXTCimaInt And Range("G" & contador).Interior.Color = vbRed Then
+                        linhas(c) = OriginalConteudo
+                        linhas(c + 1) = NovoConteudo
+                        Range("A" & contador).Interior.Color = vbGreen
+                        Range("G" & contador).Value = "ok"
+                        Exit For
+                    Else
+                        If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima And bm = bmTXTCima And Range("G" & contador).Interior.Color = vbRed Then  ' posso tambem colocar o Pis para previnir erros de indentificação
+                            linhas(c) = NovoConteudo
+                            Range("A" & contador).Interior.Color = vbYellow
+                            Exit For
+                        Else
+                            For y = 0 To 1 Step 1
+                                linhas(c + 1) = linhas(c - 1)
+                                linhas(c) = linhas(c - 2)
+                            Next y
+                            linhas(c) = linhas(c - 1)
+                            'linhas(c - 1) = linhas(c - 2)
+                        End If
+                        
+                    End If
+                End If
+                    
+                
+                    
+                    
+                
+                Next c
+                
+                    
+                    
+                
+ ' Rewrites the file with the updated content
+                Open LocaldoArquivo For Output As #NumArquivo
+ Print #NumArquivo, Join(lines, vbCrLf) ' Converts the array back to a single string with lines separated by vbCrLf
+                Close #NumArquivo
+    
+                    
+ counter = counter + 1' for in the worksheet to move to the bottom BM
+                
+                
+                Exit For
+                
+                    If i = UBound(linhas) Then
+ 'MsgBox "Not found : " & name & " " & bm
+                        'i = UltimaLinha
+ Range("A" & contador). Interior.Color = vbRed
+                        contador = contador + 1
+                        Exit For
+                    End If
+                
+            'End If
+         
+         Next i
+         i = 3
+        
+        
+        
+        
+        
+        Else
+            contador = contador + 1
+        End If
+        
+            
+         
+     
+     
+ Loop
+
+
+
+
+
+
+End Sub
