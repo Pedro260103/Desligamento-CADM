@@ -1,15 +1,14 @@
-
 Sub GravarMesAnterior()
-    Dim LocaldoArquivo As String
+    Dim LocalDoArquivo As String
     Dim NumArquivo As Integer
     Dim FileContent As String
     Dim Linha As String
      
     
-    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-RETIFICADORAS\09-2021-(2ª Retificadora)\CADM\SEFIP - Código.RE"
+    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-RETIFICADORAS\09-2021-(2ª Retificadora)\CADM\teste\SEFIP-teste.RE"
     NumArquivo = FreeFile
     
-    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    Open LocalDoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
     
     FileContent = Input$(LOF(1), #NumArquivo)
     Close #NumArquivo
@@ -19,13 +18,13 @@ Sub GravarMesAnterior()
  
     Dim Codigo As String
     Dim Pis As String
-    Dim nome As String
+    Dim Nome As String
     Dim nomeTXT As String
     Dim DataAdimissao As String
     Dim DataAdimissaoTXT As String
     Dim Codigo20 As String
     Dim CodigoDesligamento As String
-    Dim bm As String
+    Dim BM As String
     Dim bmTXT As String
     Dim DataNacimento As String
     Dim DataDemissao As String
@@ -48,10 +47,10 @@ Sub GravarMesAnterior()
     'AddLinhasEmBranco (UBound(linhas))
     
     Do While Range("A" & contador).Value <> ""
-        bm = Range("A" & contador).Value
-        bm = Replace(bm, "-", "")
-        bm = Replace(bm, "X", "0")
-        nome = Range("B" & contador).Value
+        BM = Range("A" & contador).Value
+        BM = Replace(BM, "-", "")
+        BM = Replace(BM, "X", "0")
+        Nome = Range("B" & contador).Value
         DataAdmissao = Range("C" & contador).Value
         DataAdmissao = Replace(DataAdmissao, "/", "")
         HValorOriginal = Range("H" & contador).Value
@@ -107,6 +106,12 @@ Sub GravarMesAnterior()
                 
                 
                 For c = UBound(linhas) To i Step -1
+                Dim DataAdmissaoTXTBaixo As String
+                    
+                    If c <> UBound(linhas) Then
+                    DataAdmissaoTXTBaixo = Mid(linhas(c + 1), 44, 8)
+                    End If
+                    
                 DataAdmissaoTXTCima = Mid(linhas(c - 1), 44, 8)
                 bmTXTCima = Mid(linhas(c - 1), 127, 8)
                 PisTXTCima = Mid(linhas(c - 1), 33, 11)
@@ -114,17 +119,28 @@ Sub GravarMesAnterior()
                 Dim PisInt As String
                 Dim PisTXTCimaInt As String
                 
+                
                 If PisTXTCima <> "*" And PisTXTCima <> "" And Pis <> "" And Pis <> "*" Then
                     PisInt = ConverterStringParaInteger(Pis)
                     PisTXTCimaInt = ConverterStringParaInteger(PisTXTCima)
-                    If PisInt > PisTXTCimaInt And Range("G" & contador).Interior.Color = vbRed Then
+                    'DataAdmissao = Range("C" & contador).Value
+                    
+                    Dim DataAdmissao2 As String
+                    DataAdmissao2 = Range("C" & contador).Value
+                    'DataAdmissao2 = Replace(DataAdmissao, "/", "")
+                    DataAdmissaoTXTCima = ConverterDataComBarra(DataAdmissaoTXTCima) ' de 26012003 para 26/01/2003
+                    
+                    
+                    If PisInt > PisTXTCimaInt And Range("G" & contador).Interior.Color = vbRed And CompararDatas(DataAdmissaoTXTCima, DataAdmissao2) Then ' erro aqui
                         linhas(c) = OriginalConteudo
                         linhas(c + 1) = NovoConteudo
                         Range("A" & contador).Interior.Color = vbGreen
                         Range("G" & contador).Value = "ok"
                         Exit For
                     Else
-                        If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima And bm = bmTXTCima And Range("G" & contador).Interior.Color = vbRed Then  ' posso tambem colocar o Pis para previnir erros de indentificação
+                        'DataAdmissaoTXTCima = ConverterDataSemBarra(DataAdmissaoTXTCima) ' de 26/01/2003 para 26012003
+                        DataAdmissaoTXTCima = Replace(DataAdmissaoTXTCima, "/", "")
+                        If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima And BM = bmTXTCima And Range("G" & contador).Interior.Color = vbRed Then  ' posso tambem colocar o Pis para previnir erros de indentificação
                             linhas(c) = NovoConteudo
                             Range("A" & contador).Interior.Color = vbYellow
                             Exit For
@@ -149,21 +165,21 @@ Sub GravarMesAnterior()
                     
                     
                 
- ' Rewrites the file with the updated content
-                Open LocaldoArquivo For Output As #NumArquivo
- Print #NumArquivo, Join(lines, vbCrLf) ' Converts the array back to a single string with lines separated by vbCrLf
+                ' Reescreve o arquivo com o conteúdo atualizado
+                Open LocalDoArquivo For Output As #NumArquivo
+                Print #NumArquivo, Join(linhas, vbCrLf) ' Converte o array de volta para uma única string com linhas separadas por vbCrLf
                 Close #NumArquivo
     
                     
- counter = counter + 1' for in the worksheet to move to the bottom BM
+                    contador = contador + 1 ' para na planilha passar para o BM de baixo
                 
                 
                 Exit For
                 
                     If i = UBound(linhas) Then
- 'MsgBox "Not found : " & name & " " & bm
+                        'MsgBox "Não encontrado : " & nome & " " & bm
                         'i = UltimaLinha
- Range("A" & contador). Interior.Color = vbRed
+                        Range("A" & contador).Interior.Color = vbRed
                         contador = contador + 1
                         Exit For
                     End If
@@ -193,3 +209,22 @@ Sub GravarMesAnterior()
 
 
 End Sub
+Function ConverterDataComBarra(ByVal DataAdmissaoTXTCima As String) As String
+    ' Verifique se a string tem o comprimento adequado (8 caracteres)
+    If Len(DataAdmissaoTXTCima) <> 8 Then
+        ConverterDataComBarra = "Data inválida"
+        Exit Function
+    End If
+    
+    ' Extrair dia, mês e ano da string
+    Dim dia As String
+    Dim mes As String
+    Dim ano As String
+    
+    dia = Left(DataAdmissaoTXTCima, 2)
+    mes = Mid(DataAdmissaoTXTCima, 3, 2)
+    ano = Right(DataAdmissaoTXTCima, 4)
+    
+    ' Formatar a data no formato desejado
+    ConverterDataComBarra = dia & "/" & mes & "/" & ano
+End Function
