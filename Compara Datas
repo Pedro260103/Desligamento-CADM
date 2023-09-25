@@ -1,16 +1,16 @@
-Function CompararDatas(dataP As String, dataT As String) As Boolean
+Função CompararDatas(dataP como String, dataT como String) como Boolean
     ' Converte as datas de string para objetos de data
     Dim dataP_Obj As Date
     Dim dataT_Obj As Date
     
-    If IsDate(dataP) And IsDate(dataT) Then
+ Se IsDate(dataP) e IsDate(dataT), então
         dataP_Obj = CDate(dataP)
         dataT_Obj = CDate(dataT)
         
         ' Compara as datas e retorna True se dataP for maior que dataT
         CompararDatas = (dataP_Obj > dataT_Obj)
-    Else
+ Mais
         ' Se uma das datas não for válida, retorna False
-        CompararDatas = False
-    End If
-End Function
+ CompararDatas = Falso
+ Fim Se
+Função Fim
