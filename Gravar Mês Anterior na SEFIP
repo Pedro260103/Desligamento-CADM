@@ -5,7 +5,7 @@ Sub GravarMesAnterior()
     Dim Linha As String
      
     
-    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-RETIFICADORAS\09-2021-(2ª Retificadora)\CADM\teste\SEFIP-teste.RE"
+    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2018-RETIFICADORAS\08-2018-(1ª Retificadora)\CADM\SEFIP - Codigo.RE"
     NumArquivo = FreeFile
     
     Open LocalDoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
@@ -30,13 +30,13 @@ Sub GravarMesAnterior()
     Dim DataDemissao As String
     Dim NovoConteudo As String
     Dim linhas() As String
-    Dim contador As LongLong
+    Dim Contador As LongLong
     Dim UltimaLinhaCodigo90 As String
     Dim DataAdmissaoTXTCima As String
     Dim bmTXTCima As String
     Dim PisTXTCima As String
     Dim OriginalConteudo As String
-    contador = 2
+    Contador = 2
     linhas = Split(FileContent, vbCrLf)
     Dim HValorOriginal As String
     
@@ -46,17 +46,17 @@ Sub GravarMesAnterior()
     UltimaLinhaCodigo90 = linhas(UBound(linhas) - 1)
     'AddLinhasEmBranco (UBound(linhas))
     
-    Do While Range("A" & contador).Value <> ""
-        BM = Range("A" & contador).Value
+    Do While Range("A" & Contador).Value <> ""
+        BM = Range("A" & Contador).Value
         BM = Replace(BM, "-", "")
         BM = Replace(BM, "X", "0")
-        Nome = Range("B" & contador).Value
-        DataAdmissao = Range("C" & contador).Value
+        Nome = Range("B" & Contador).Value
+        DataAdmissao = Range("C" & Contador).Value
         DataAdmissao = Replace(DataAdmissao, "/", "")
-        HValorOriginal = Range("H" & contador).Value
-        IValorDesligamento = Range("I" & contador).Value
+        HValorOriginal = Range("H" & Contador).Value
+        IValorDesligamento = Range("I" & Contador).Value
         
-        If Range("A" & contador).Interior.Color = vbRed Then
+        If Range("A" & Contador).Interior.Color = vbRed Then
         
             For i = 3 To UBound(linhas) '6966
             'nome = Mid(linhas(i), 54, 70) ' Ajuste para 30 caracteres
@@ -70,9 +70,9 @@ Sub GravarMesAnterior()
             Pis = Mid(HValorOriginal, 33, 11) ' Ajuste para 11 caracteres
             'DataAdmissao = Mid(linhas(i), 44, 8) ' Extrai a DataAdmissao corretamente
             Codigo20 = Mid(HValorOriginal, 48, 2)
-            DataDemissao = Range("D" & contador).Value
+            DataDemissao = Range("D" & Contador).Value
             DataDemissao = Replace(DataDemissao, "/", "")
-            CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
+            'CodigoDesligamento = MotivoDesligamentoCodigo(DataDemissao, contador) 'MotivoDesligamentoCodigo(DataDemissao, contador)
             DataNacimento = Mid(HValorOriginal, 155, 8)
             ''Codigo = Left(Codigo, 1) & "2" & Right(Codigo, Len(Codigo) - 2)
             
@@ -126,23 +126,23 @@ Sub GravarMesAnterior()
                     'DataAdmissao = Range("C" & contador).Value
                     
                     Dim DataAdmissao2 As String
-                    DataAdmissao2 = Range("C" & contador).Value
-                    'DataAdmissao2 = Replace(DataAdmissao, "/", "")
+                    DataAdmissao2 = Range("C" & Contador).Value
+                    DataAdmissao2 = Replace(DataAdmissao, "/", "")
                     DataAdmissaoTXTCima = ConverterDataComBarra(DataAdmissaoTXTCima) ' de 26012003 para 26/01/2003
                     
                     
-                    If PisInt > PisTXTCimaInt And Range("G" & contador).Interior.Color = vbRed And CompararDatas(DataAdmissaoTXTCima, DataAdmissao2) Then ' erro aqui
+                    If PisInt > PisTXTCimaInt And Range("G" & Contador).Interior.Color = vbRed Then 'And CompararDatas(DataAdmissaoTXTCima, DataAdmissao2) Then ' erro aqui
                         linhas(c) = OriginalConteudo
                         linhas(c + 1) = NovoConteudo
-                        Range("A" & contador).Interior.Color = vbGreen
-                        Range("G" & contador).Value = "ok"
+                        Range("A" & Contador).Interior.Color = vbGreen
+                        Range("G" & Contador).Value = "ok"
                         Exit For
                     Else
                         'DataAdmissaoTXTCima = ConverterDataSemBarra(DataAdmissaoTXTCima) ' de 26/01/2003 para 26012003
                         DataAdmissaoTXTCima = Replace(DataAdmissaoTXTCima, "/", "")
-                        If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima And BM = bmTXTCima And Range("G" & contador).Interior.Color = vbRed Then  ' posso tambem colocar o Pis para previnir erros de indentificação
+                        If DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima And BM = bmTXTCima And Range("G" & Contador).Interior.Color = vbRed Then  ' posso tambem colocar o Pis para previnir erros de indentificação
                             linhas(c) = NovoConteudo
-                            Range("A" & contador).Interior.Color = vbYellow
+                            Range("A" & Contador).Interior.Color = vbYellow
                             Exit For
                         Else
                             For y = 0 To 1 Step 1
@@ -171,7 +171,7 @@ Sub GravarMesAnterior()
                 Close #NumArquivo
     
                     
-                    contador = contador + 1 ' para na planilha passar para o BM de baixo
+                    Contador = Contador + 1 ' para na planilha passar para o BM de baixo
                 
                 
                 Exit For
@@ -179,8 +179,8 @@ Sub GravarMesAnterior()
                     If i = UBound(linhas) Then
                         'MsgBox "Não encontrado : " & nome & " " & bm
                         'i = UltimaLinha
-                        Range("A" & contador).Interior.Color = vbRed
-                        contador = contador + 1
+                        Range("A" & Contador).Interior.Color = vbRed
+                        Contador = Contador + 1
                         Exit For
                     End If
                 
@@ -194,7 +194,7 @@ Sub GravarMesAnterior()
         
         
         Else
-            contador = contador + 1
+            Contador = Contador + 1
         End If
         
             
