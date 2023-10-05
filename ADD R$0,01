@@ -3,7 +3,7 @@ Sub grava()
     Dim NumArquivo As Integer
     Dim FileContent As String
     Dim Linha As String
-    LocalDoArquivo = "C:\Users\pres00314250\Desktop\arquivo_aprender.txt"
+    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2020-RETIFICADORAS\02-2020-(1ª Retificadora-DESLIGAMENTOS)\CADM\SEFIP - Código.RE"
     NumArquivo = FreeFile
     
     Open LocalDoArquivo For Input As #NumArquivo
@@ -28,7 +28,7 @@ Sub grava()
     puladas = 0
     linhas = Split(FileContent, vbCrLf)
     
-    
+    Dim MesDelig As String
     
     
     
@@ -37,8 +37,9 @@ Sub grava()
     For i = 3 To UBound(linhas)
         Nome = Mid(linhas(i), 54, 70)
         BM = Mid(linhas(i), 124, 11)
-        eUmBM = Mid(linhas(i), 124, 2)
         
+        eUmBM = Mid(linhas(i), 124, 2)
+        Range("B2").Value = i
         If InStr(1, linhas(i), eUmBM, vbTextCompare) > 0 And eUmBM = "00" Then ' ficou meio redundante
             puladas = puladas + 1
             If InStr(1, linhas(i + 1), eUmBM, vbTextCompare) <> BM Then
@@ -50,7 +51,11 @@ Sub grava()
         Else
             
             NomeFlutuante = Mid(linhas(i + 1), 54, 70)
-            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" Then
+            MesDelig = Mid(linhas(i), 128, 2)
+            'MesDelig = ConverterStringParaInteger(MesDelig)
+            'MsgBox (MesDelig)
+            'MsgBox (MesDelig + 30)
+            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" And MesDelig = "02" Then
                 
                 'MsgBox "Achamos o I3N , I1N , J"
                 PrimeiraInfo = Mid(linhas(i - contador), 1, 244)
@@ -89,6 +94,7 @@ Sub grava()
         End If
     
     Next i
+    
     
 MsgBox "Fim!"
 End Sub
