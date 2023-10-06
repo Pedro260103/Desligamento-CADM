@@ -1,0 +1,118 @@
+Sub GravaValoresNaSEFIP()
+   
+    Dim LocaldoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2020-RETIFICADORAS\02-2020-(1ª Retificadora-DESLIGAMENTOS)\CADM\SEFIP - Código.RE"
+    NumArquivo = FreeFile
+    
+    Open LocaldoArquivo For Input As #NumArquivo
+
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+    
+    
+    Linha = Trim(FileContent)
+    
+    
+    Dim PrimeiraInfo As String
+    Dim SegundaInfo As String
+    Dim TerceiraInfo As String
+    Dim NovoConteudo As String
+    Dim linhas() As String
+    
+    
+    Dim Salario As String
+    Dim Contrib As String
+    Dim SalarioTabela As String ' Range("C" & contador).Value
+    Dim ContribTabela As String ' Range("D" & contador).Value
+    Dim bm As String
+    Dim BmTabela As String
+    
+    
+    linhas = Split(FileContent, vbCrLf)
+    
+    
+    
+    Dim Contador As Long
+    Contador = 2
+    Do While Range("A" & Contador).Value <> ""
+    Range("G5").Value = Contador
+    SalarioTabela = Range("C" & Contador).Text
+    ContribTabela = Range("D" & Contador).Text
+    'MsgBox (SalarioTabela & " || " & ContribTabela)
+    SalarioTabela = Replace(SalarioTabela, ",", "")
+    SalarioTabela = Replace(SalarioTabela, ".", "")
+    ContribTabela = Replace(ContribTabela, ",", "")
+    ContribTabela = Replace(ContribTabela, ".", "")
+    'MsgBox (SalarioTabela & " || " & ContribTabela)
+    BmTabela = Range("A" & Contador).Value
+    BmTabela = Replace(BmTabela, "X", "0")
+    
+    Dim comprimentoOriginal As Integer
+    comprimentoOriginal = Len(BmTabela)
+    
+    ' Mantenha apenas os últimos 7 caracteres
+    If comprimentoOriginal >= 7 Then
+        BmTabela = Right(BmTabela, 7)
+    Else
+        BmTabela = "0" & BmTabela
+    End If
+    
+    
+        For i = 3 To UBound(linhas)
+            Range("F2").Value = UBound(linhas)
+            Range("G2").Value = i
+            PrimeiraInfo = Mid(linhas(i), 1, 167)
+            'Salario = Mid(linhas(i), 168, 14)
+            Salario = "000000000000000"
+            SegundaInfo = Mid(linhas(i), 183, 19)
+            'Contrib = Mid(linhas(i), 202, 159)
+            Contrib = "000000000000000"
+            TerceiraInfo = Mid(linhas(i), 217, 144)
+            Salario = Left(Salario, Len(Salario) - Len(SalarioTabela)) & SalarioTabela
+            Contrib = Left(Contrib, Len(Contrib) - Len(ContribTabela)) & ContribTabela
+            
+            
+            SalarioTabela = Replace(SalarioTabela, " ", "")
+            ContribTabela = Replace(ContribTabela, " ", "")
+            
+            bm = Mid(linhas(i), 128, 7)
+            
+            'MsgBox (Salario)
+            'MsgBox (Contrib)
+                
+            
+            If BmTabela = bm And SegundaInfo <> "                                                                                                                                                                                 *" Then
+                NovoConteudo = PrimeiraInfo & Salario & SegundaInfo & Contrib & TerceiraInfo
+                linhas(i) = NovoConteudo
+                Range("A" & Contador).Interior.Color = vbGreen
+                
+                Contador = Contador + 1
+                Exit For
+                
+            Else
+                If i >= UBound(linhas) Then
+                    Contador = Contador + 1
+                End If
+            End If
+        Next i
+        
+        
+    Loop
+    
+        
+FileContent = Join(linhas, vbCrLf)
+                
+                    
+'Abre o arquivo em modo de escrita para gravar as alterações
+Open LocaldoArquivo For Output As #NumArquivo
+Print #NumArquivo, FileContent
+Close #NumArquivo
+MsgBox "Fim!"
+End Sub
+'linhas(i) = NovoConteudo
+                    
+                    
+                   
