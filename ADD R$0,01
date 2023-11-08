@@ -55,7 +55,7 @@ Sub grava()
             'MesDelig = ConverterStringParaInteger(MesDelig)
             'MsgBox (MesDelig)
             'MsgBox (MesDelig + 30)
-            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" And MesDelig = "02" Then
+            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" And MesDelig = "02" Then '  LEMBRA DE MUDAR O MESdELIGAMENTO PARA O MÊS CORRETO DA PLANILHA 
                 
                 'MsgBox "Achamos o I3N , I1N , J"
                 PrimeiraInfo = Mid(linhas(i - contador), 1, 244)
