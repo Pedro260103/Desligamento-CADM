@@ -3,7 +3,7 @@ Sub grava()
     Dim NumArquivo As Integer
     Dim FileContent As String
     Dim Linha As String
-    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2020-RETIFICADORAS\02-2020-(1ª Retificadora-DESLIGAMENTOS)\CADM\SEFIP - Código.RE"
+    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-RETIFICADORAS\10-2021-(2ª Retificadora)\CADM\SEFIP.RE"
     NumArquivo = FreeFile
     
     Open LocalDoArquivo For Input As #NumArquivo
@@ -52,16 +52,16 @@ Sub grava()
             
             NomeFlutuante = Mid(linhas(i + 1), 54, 70)
             MesDelig = Mid(linhas(i), 128, 2)
-            MesDelig = ConverterStringParaInteger(MesDelig)
+            'MesDelig = ConverterStringParaInteger(MesDelig)
             'MsgBox (MesDelig)
             'MsgBox (MesDelig + 30)
-            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" And MesDelig = "02" Then '  LEMBRA DE MUDAR O MESdELIGAMENTO PARA O MÊS CORRETO DA PLANILHA 
-                
-                'MsgBox "Achamos o I3N , I1N , J"
+            If eUmBM = "I3" Or eUmBM = "I1" Or eUmBM = " J" Then
+                If MesDelig = "09" Then
+                    'MsgBox "Achamos o I3N , I1N , J"
                 PrimeiraInfo = Mid(linhas(i - contador), 1, 244)
                 SegundaInfo = Mid(linhas(i - contador), 245, 116)
                 'MsgBox SegundaInfo
-                SegundaInfo = Left(SegundaInfo, 1) & "1" & Right(SegundaInfo, Len(SegundaInfo) - 2)
+                SegundaInfo = Left(SegundaInfo, 1) & "0" & Right(SegundaInfo, Len(SegundaInfo) - 2)
                 NovoConteudo = PrimeiraInfo + SegundaInfo
                 'MsgBox NovoConteudo
                 ' Abre o arquivo em modo de leitura e escrita
@@ -77,6 +77,10 @@ Sub grava()
                 Print #NumArquivo, FileContent
                 Close #NumArquivo
                 contador = 1
+                Else
+                    contador = contador + 1
+                End If
+                
             Else
             
             
