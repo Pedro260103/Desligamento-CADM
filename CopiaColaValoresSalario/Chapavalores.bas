@@ -1,0 +1,83 @@
+Attribute VB_Name = "Chapavalores"
+Sub ChapaValoresNaSEFIP()
+   
+    Dim LocaldoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2020-RETIFICADORAS\02-2020-(1ª Retificadora-DESLIGAMENTOS)\FGTS-PBH\SEFIP.RE"
+    NumArquivo = FreeFile
+    
+    Open LocaldoArquivo For Input As #NumArquivo
+
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+    
+    
+    Linha = Trim(FileContent)
+    
+    
+    
+    
+    
+    linhas = Split(FileContent, vbCrLf)
+    
+    
+    
+    Dim Contador As Long
+    Dim bm As String
+    Dim Salario As String
+    Dim Espaco As String
+    Dim CompraEspaco As String
+    Espaco = "000000000000000"
+    Contador = 2
+    
+    Dim Texto As String
+    
+    
+    Do While Range("A" & Contador).Value <> ""
+        For i = 35 To UBound(linhas)
+            
+            
+            bm = Mid(linhas(i), 124, 2)
+            CompraEspaco = Mid(linhas(i - 1), 217, 15)
+            'bm = Mid(linhas(i), 128, 7)
+            If ComparaBM(bm) And CompraEspaco = Espaco Then
+                Texto = Mid(linhas(i - 1), 1, 360)
+                Salario = Mid(Texto, 168, 15)
+                Texto = Left(Texto, 217) & Replace(Salario, "0", "", 1, 1) & Right(Texto, 129)
+                linhas(i - 1) = Texto
+                Contador = Contador + 1
+                Exit For
+            Else
+                If i >= UBound(linhas) Then '
+                    Contador = Contador + 1
+                    Exit For
+                End If
+                
+            End If
+            
+        Next i
+    Loop
+    
+        
+FileContent = Join(linhas, vbCrLf)
+                
+                    
+'Abre o arquivo em modo de escrita para gravar as alterações
+Open LocaldoArquivo For Output As #NumArquivo
+Print #NumArquivo, FileContent
+Close #NumArquivo
+MsgBox "Fim!"
+End Sub
+'linhas(i) = NovoConteudo
+Function ComparaBM(bm As String) As Boolean
+    If bm = "P3" Or bm = "Q1" Or bm = "Q2" Then
+        ComparaBM = True
+    Else
+        ComparaBM = False
+    End If
+End Function
+
+
+

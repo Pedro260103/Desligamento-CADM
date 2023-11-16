@@ -1,0 +1,124 @@
+Attribute VB_Name = "VermelhoDecimoTerceiro"
+Sub Vermelhodecimoterceiro()
+    Dim LocaldoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+     
+    
+    LocaldoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2021-ORIGINAL\01-2021\2.º ENVIO\CADM\SEFIP.RE"
+    NumArquivo = FreeFile
+    
+    Open LocaldoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+ 
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+ 
+    Dim Codigo As String
+    Dim Pis As String
+    Dim nome As String
+    Dim nomeTXT As String
+    Dim DataAdimissao As String
+    Dim DataAdimissaoTXT As String
+    Dim Codigo20 As String
+    Dim CodigoDesligamento As String
+    Dim bm As String
+    Dim bmTXT As String
+    Dim DataNacimento As String
+    Dim DataDemissao As String
+    Dim NovoConteudo As String
+    Dim linhas() As String
+    Dim Contador As LongLong
+    Dim UltimaLinhaCodigo90 As String
+    Dim DataAdmissaoTXTCima As String
+    Dim bmTXTCima As String
+    Dim PisTXTCima As String
+    Dim OriginalConteudo As String
+    Contador = 2
+    linhas = Split(FileContent, vbCrLf)
+    Dim Vermelhos As Integer
+    Vermelhos = 0
+    
+   
+    Do While Range("A" & Contador).Value <> ""
+        
+        bm = Range("A" & Contador).Value
+        bm = Replace(bm, "-", "")
+        bm = Replace(bm, "X", "0")
+        nome = Range("B" & Contador).Value
+        DataAdmissao = Range("C" & Contador).Value
+        DataAdmissao = Replace(DataAdmissao, "/", "")
+        
+        BmTabela = Range("A" & Contador).Value
+        BmTabela = Replace(BmTabela, "X", "0")
+        
+        Dim comprimentoOriginal As Integer
+        comprimentoOriginal = Len(BmTabela)
+        
+        ' Mantenha apenas os últimos 7 caracteres
+        If comprimentoOriginal >= 7 Then
+            BmTabela = Right(BmTabela, 7)
+        Else
+            BmTabela = "0" & BmTabela
+        End If
+        
+        
+                    If Range("A" & Contador).Interior.Color = vbRed Then
+                        Vermelhos = Vermelhos + 1
+                        Range("L5").Value = Vermelhos
+                    End If
+        For i = 3 To UBound(linhas) '6966
+                bmTXT = Mid(linhas(i), 127, 7)
+                
+                If Range("A" & Contador).Interior.Color = vbRed Then
+                    
+                    If bmTXT = BmTabela Then   'Or InStr(1, linhas(i), nome, vbTextCompare) > 0 Then  ' InStr(1, linhas(i), bm, vbTextCompare) > 0
+                
+                
+                    OriginalConteudo = linhas(i)
+                    OriginalConteudo = Left(OriginalConteudo, 175) & "0000001" & Mid(OriginalConteudo, 183) ' 177 183
+                    
+                    ' Substituir os caracteres na posição 57 por 5 zeros
+                    OriginalConteudo = Left(OriginalConteudo, 210) & "000000" & Mid(OriginalConteudo, 217) ' 212 217
+                    
+                    ' Substituir os caracteres na posição 71 por 6 zeros
+                    OriginalConteudo = Left(OriginalConteudo, 224) & "0000000" & Mid(OriginalConteudo, 232) ' 226 232
+                    
+                   
+                    
+                            'Range("A" & Contador).Interior.Color = RGB(146, 208, 80)
+                            Range("G" & Contador).Interior.Color = vbRed
+                            Range("H" & Contador).Value = OriginalConteudo
+                            'Range("I" & Contador).Value = NovoConteudo
+                   
+                        
+                    Contador = Contador + 1 ' para na planilha passar para o BM de baixo
+                    
+                    
+                    Exit For
+                    Else
+                        If i >= UBound(linhas) Then
+                                Contador = Contador + 1
+                                Exit For
+                        End If
+                    End If
+                Else
+                        If Range("A" & Contador).Interior.Color <> vbRed Then
+                            Contador = Contador + 1
+                            Exit For
+                        
+                        End If
+                    
+                End If
+                
+        Next i
+            
+     
+        
+     
+    Loop
+
+End Sub
