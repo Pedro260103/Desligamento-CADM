@@ -1,0 +1,79 @@
+Sub ChapaValoresNaSEFIP()
+   
+    Dim LocalDoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2020-RETIFICADORAS\05-2020-(1ª Retificadora-DESLIGAMENTOS)\CADM\SEFIP.RE"
+    NumArquivo = FreeFile
+    
+    Open LocalDoArquivo For Input As #NumArquivo
+
+    FileContent = Input$(LOF(1), #NumArquivo)
+    Close #NumArquivo
+    
+    
+    Linha = Trim(FileContent)
+    
+    
+    
+    
+    
+    linhas = Split(FileContent, vbCrLf)
+    
+    
+    
+    Dim contador As LongLong
+    Dim BM As String
+    Dim Salario As String
+    Dim Espaco As String
+    Dim CompraEspaco As String
+    Espaco = "000000000000000"
+    contador = 2
+    
+    Dim Texto As String
+    
+    
+    Do While contador <= UBound(linhas)
+        For i = 3 To UBound(linhas)
+            
+            
+            BM = Mid(linhas(i), 124, 2)
+            CompraEspaco = Mid(linhas(i - 1), 217, 15)
+            'bm = Mid(linhas(i), 128, 7)
+            If ComparaBM(BM) And CompraEspaco = Espaco Then
+                Texto = Mid(linhas(i - 1), 1, 360)
+                Salario = Mid(Texto, 168, 15)
+                Texto = Left(Texto, 217) & Replace(Salario, "0", "", 1, 1) & Right(Texto, 129)
+                linhas(i - 1) = Texto
+                contador = contador + 1
+                Exit For
+            Else
+                If i >= UBound(linhas) Then '
+                    contador = contador + 1
+                    Exit For
+                End If
+                
+            End If
+            
+        Next i
+    Loop
+    
+        
+FileContent = Join(linhas, vbCrLf)
+                
+                    
+'Abre o arquivo em modo de escrita para gravar as alterações
+Open LocalDoArquivo For Output As #NumArquivo
+Print #NumArquivo, FileContent
+Close #NumArquivo
+MsgBox "Fim!"
+End Sub
+'linhas(i) = NovoConteudo
+Function ComparaBM(BM As String) As Boolean
+    If BM = "P3" Or BM = "Q1" Or BM = "Q2" Then
+        ComparaBM = True
+    Else
+        ComparaBM = False
+    End If
+End Function
