@@ -49,7 +49,11 @@ Sub GravaValoresNaSEFIP()
     'MsgBox (SalarioTabela & " || " & ContribTabela)
     BmTabela = Range("A" & Contador).Value
     BmTabela = Replace(BmTabela, "X", "0")
-    
+    BmTabela = Replace(BmTabela, "-", "")
+    BmTabela = Replace(BmTabela, " ", "")
+    BmTabela = Replace(BmTabela, " ", "")
+    BmTabela = Replace(BmTabela, " ", "")
+
     Dim comprimentoOriginal As Integer
     comprimentoOriginal = Len(BmTabela)
     
