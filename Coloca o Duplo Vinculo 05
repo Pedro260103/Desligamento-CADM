@@ -26,8 +26,6 @@ Sub grava05()
         PrimeiraInfo = Mid(linhas(i), 1, 199)
         SegundaInfo = Mid(linhas(i), 202, 159)
         Codigo05 = Mid(linhas(i), 200, 2)
-        Range("A2").Value = UBound(linhas)
-        Range("B2").Value = i
             If Codigo05 = "  " And SegundaInfo <> "                                                                                                                                                              *" Then
                 NovoConteudo = PrimeiraInfo & "05" & SegundaInfo
                 linhas(i) = NovoConteudo
