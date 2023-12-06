@@ -22,9 +22,8 @@ Function MotivoDesligamentoCodigo(d As String, c As LongLong) As String
             MotivoDesligamentoCodigo = "I1" + d + "N"
          
         Case Else
-            MotivoDesligamentoCodigo = "Valor invalido"
+            MotivoDesligamentoCodigo = "Motivo do Desligamento Invalido"
+            Worksheets(1).Range("E" & c).AddComment "Motivo do Desligamento Invalido"
     End Select
  
 End Function
-
-
