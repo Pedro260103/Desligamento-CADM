@@ -99,7 +99,7 @@ Sub Vermelho07()
             PisTXTCima = Mid(linhas(c - 1), 33, 11)
                 If bm = bmTXTCima And DataAdmissao = DataAdmissaoTXTCima And Pis = PisTXTCima Then
                     'linhas(c) = NovoConteudo
-                    Range("A" & Contador).Interior.Color = RGB(146, 208, 80)
+                    Range("A" & Contador).Interior.Color = vbRed
                     Range("G" & Contador).Interior.Color = vbRed
                     Range("H" & Contador).Value = OriginalConteudo
                     Range("I" & Contador).Value = NovoConteudo
