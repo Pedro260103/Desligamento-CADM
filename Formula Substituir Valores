@@ -1,0 +1,42 @@
+Sub CamposEmBranco()
+    Dim LocalDoArquivo As String
+    Dim NumArquivo As Integer
+    Dim FileContent As String
+    Dim Linha As String
+     
+    LocalDoArquivo = "X:\GESFO - ISO\GERINS em ES250-89\SEFIP\2015-RETIFICADORAS\05-2015-(1ª Retificadora-DESLIGAMENTOS)\INSS-PBH\SEFIP.RE"
+    NumArquivo = FreeFile
+    
+    Open LocalDoArquivo For Input As #NumArquivo ' Abre o arquivo em modo de leitura
+    
+    FileContent = Input$(LOF(NumArquivo), #NumArquivo)
+    Close #NumArquivo
+ 
+    ' Extrai informações da linha
+    Linha = Trim(FileContent) ' Remove espaços em branco no início e no fim
+ 
+    Dim linhas() As String
+    Dim primeiro As String
+    Dim meio As String
+    Dim final As String
+    Dim textofinal As String
+    
+    linhas = Split(FileContent, vbCrLf)
+    
+    For i = 3 To UBound(linhas)
+        primeiro = Mid(linhas(i), 1, 163)
+        meio = Mid(linhas(i), 164, 4)
+        final = Mid(linhas(i), 168, 193)
+        
+        If meio = "0000" Then
+            meio = "1421"
+            linhas(i) = primeiro & meio & final
+        End If
+    Next i
+    MsgBox fim
+    
+    ' Reescreve o arquivo com as linhas atualizadas
+    Open LocalDoArquivo For Output As #NumArquivo
+    Print #NumArquivo, Join(linhas, vbCrLf)
+    Close #NumArquivo
+End Sub
